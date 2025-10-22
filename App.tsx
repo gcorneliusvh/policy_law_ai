@@ -59,6 +59,13 @@ function App() {
     }
   };
 
+  const handleReset = () => {
+    setAnalysis(null);
+    setError(null);
+    setIsChatOpen(false);
+    setPrompt('');
+  };
+
   const handleViewDetails = (contract: Contract) => setSelectedContract(contract);
   const handleCloseDetails = () => setSelectedContract(null);
   const toggleChat = () => setIsChatOpen(prev => !prev);
@@ -145,6 +152,19 @@ function App() {
 
         {analysis && (
           <div>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-3xl font-bold text-primary">Analysis Results</h2>
+                <button
+                    onClick={handleReset}
+                    className="flex items-center gap-2 bg-secondary text-secondary-foreground font-bold py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    New Analysis
+                </button>
+            </div>
+            
             <Dashboard dashboardSummary={analysis.dashboardSummary} />
 
             <div className="mt-8 bg-card p-6 rounded-lg shadow-md">
