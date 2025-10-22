@@ -1,0 +1,5 @@
+{
+  "name": "AI-Powered Analysis Dashboard",
+  "description": "An AI-powered dashboard that ingests and analyzes policies, contracts, or any set of documents. It structures unstructured data to highlight similarities and differences, visualizes key themes, and provides actionable suggestions for improvement.",
+  "requestFramePermissions": []
+}
