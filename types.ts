@@ -25,6 +25,8 @@ export interface DashboardAnalysis {
 }
 
 export interface FullAnalysis {
+  reportTitle: string;
+  strategicRecommendationsForCanada: string[];
   dashboardSummary: DashboardAnalysis;
   contracts: Contract[];
 }

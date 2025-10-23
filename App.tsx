@@ -63,7 +63,7 @@ function App() {
     setAnalysis(null);
     setError(null);
     setIsChatOpen(false);
-    setPrompt('');
+    // Let's keep the prompt in case the user wants to tweak it
   };
 
   const handleViewDetails = (contract: Contract) => setSelectedContract(contract);
@@ -152,8 +152,32 @@ function App() {
 
         {analysis && (
           <div>
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-3xl font-bold text-primary">Analysis Results</h2>
+            <h1 className="text-4xl font-extrabold text-primary text-center mb-8">{analysis.reportTitle}</h1>
+
+            <div className="mb-8 bg-card p-6 rounded-lg shadow-md border-l-4 border-secondary">
+              <h2 className="text-2xl font-bold text-primary mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Strategic Recommendations for Canada
+              </h2>
+              <ul className="space-y-3">
+                {analysis.strategicRecommendationsForCanada.map((rec, index) => (
+                  <li key={index} className="flex items-start text-text">
+                    <span className="text-secondary font-bold mr-3 text-lg mt-0.5">&#8680;</span>
+                    <span>{rec}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="flex justify-between items-center mb-6 border-b border-border pb-4">
+              <div>
+                <h2 className="text-2xl font-bold text-primary">Analysis Report</h2>
+                <p className="text-md text-muted-foreground mt-1">
+                  Showing results for: <span className="font-semibold text-text">"{prompt}"</span>
+                </p>
+              </div>
                 <button
                     onClick={handleReset}
                     className="flex items-center gap-2 bg-secondary text-secondary-foreground font-bold py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors"

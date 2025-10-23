@@ -7,6 +7,15 @@ const model = "gemini-2.5-pro";
 const responseSchema = {
     type: Type.OBJECT,
     properties: {
+      reportTitle: {
+        type: Type.STRING,
+        description: "A concise, insightful, and engaging headline for the entire analysis report, summarizing the key findings."
+      },
+      strategicRecommendationsForCanada: {
+        type: Type.ARRAY,
+        items: { type: Type.STRING },
+        description: "Actionable recommendations for Canada to adopt best practices or address gaps, based on the comparative analysis of international policies. Provide 3-5 distinct recommendations."
+      },
       dashboardSummary: {
         type: Type.OBJECT,
         properties: {
@@ -64,7 +73,7 @@ const responseSchema = {
         description: "An array of detailed analyses for each individual country's policy.",
       },
     },
-    required: ["dashboardSummary", "contracts"],
+    required: ["reportTitle", "strategicRecommendationsForCanada", "dashboardSummary", "contracts"],
 };
 
 export async function generateAnalysisFromPrompt(promptText: string, countries: string[]): Promise<FullAnalysis> {
@@ -74,11 +83,13 @@ export async function generateAnalysisFromPrompt(promptText: string, countries: 
       Your task is to perform a comprehensive comparison and provide a detailed analysis in the specified JSON format.
   
       **Instructions:**
-      1.  **Overall Dashboard Summary:**
+      1.  **Generate a Report Title:** Create a concise, insightful, and engaging headline for the entire analysis report. This should be the 'reportTitle'.
+      2.  **Strategic Recommendations for Canada:** Based on the entire analysis, provide 3-5 high-level, actionable recommendations for Canada. These should highlight how Canada can adopt best practices, address gaps, or innovate its own policies by learning from the other analyzed countries.
+      3.  **Overall Dashboard Summary:**
           *   Identify 3-5 high-level **key themes** that emerge across all policies.
           *   Pinpoint the **most common clauses** or policy areas. For each, provide its name, a brief description, and its frequency as a percentage.
           *   Highlight significant **divergent approaches** where countries handle the same topic differently.
-      2.  **Individual Policy Analysis:**
+      4.  **Individual Policy Analysis:**
           *   For each country, create a separate entry.
           *   Assign a unique 'id' starting from 0.
           *   Identify the 'country' and a descriptive 'policyTitle'.
@@ -118,6 +129,10 @@ export function startChat(analysis: FullAnalysis): void {
   `).join('\n\n');
 
   const dashboardContext = `
+    **Report Title: ${analysis.reportTitle}**
+    **Strategic Recommendations for Canada:**
+    ${analysis.strategicRecommendationsForCanada.map(rec => `- ${rec}`).join('\n')}
+
     **Dashboard Summary**
     Key Themes: ${analysis.dashboardSummary.keyThemes.join(', ')}
     Common Clauses: ${analysis.dashboardSummary.commonClauses.map(cc => cc.clause).join(', ')}
@@ -127,7 +142,7 @@ export function startChat(analysis: FullAnalysis): void {
   chat = ai.chats.create({
     model: 'gemini-2.5-flash',
     config: {
-      systemInstruction: `You are an expert policy analysis assistant. Your knowledge base is strictly limited to the analysis provided below. Answer questions based ONLY on this context. Pay special attention to comparisons with Canadian policy. If the answer isn't in the context, state that clearly.
+      systemInstruction: `You are an expert policy analysis assistant. Your knowledge base is strictly limited to the analysis provided below. Answer questions based ONLY on this context. Pay special attention to comparisons with Canadian policy and the strategic recommendations provided. If the answer isn't in the context, state that clearly.
 
       **CONTEXT:**
       ${dashboardContext}
